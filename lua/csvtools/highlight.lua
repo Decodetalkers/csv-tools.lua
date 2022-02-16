@@ -1,5 +1,8 @@
 local api = vim.api
 local M = {}
+
+--@param buf winbuf
+--@param line string
 function M.highlighttop(buf, line)
     local cout = 1
     for i = 1, #line do
@@ -15,6 +18,9 @@ function M.highlighttop(buf, line)
         end
     end
 end
+
+--@param buf winbuf
+--@param number number
 function M.highlight(buf, number)
     local line = unpack(vim.api.nvim_buf_get_lines(buf, number - 1, number, true))
     --print(line)

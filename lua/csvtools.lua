@@ -1,13 +1,14 @@
 local api = vim.api
-
+local highlight = require("csvtools.highlight")
 local M = {
     winid = nil,
     buf = nil,
     mainwindowbuf = nil,
-    before = 5,
-    after = 5,
+    before = 20,
+    after = 20,
+    clearafter = true,
 }
-local highlight = require("csvtools.topbarhighlight")
+
 function M.NewWindow()
     if M.winid == nil then
         M.mainwindowbuf = vim.api.nvim_get_current_buf()
@@ -33,6 +34,7 @@ function M.NewWindow()
         M.add_mappings()
     end
 end
+
 function M.CloseWindow()
     if M.winid ~= nil then
         vim.api.nvim_win_close(M.winid, true)
@@ -40,6 +42,10 @@ function M.CloseWindow()
         M.buf = nil
     end
 end
+
+--@param line number
+--@param length string
+--@return number number
 local function getrange(line, length)
     local start = 1
     if line - M.before > 1 then
@@ -56,6 +62,9 @@ function M.Highlight()
         M.mainwindowbuf = vim.api.nvim_get_current_buf()
         local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
         local length = vim.api.nvim_buf_line_count(M.mainwindowbuf)
+        if M.clearafter then
+            api.nvim_buf_clear_highlight(M.mainwindowbuf, -1, 0, length)
+        end
         local start, final = getrange(line, length)
         --print(start)
         --print(final)
