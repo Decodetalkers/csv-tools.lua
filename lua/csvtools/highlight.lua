@@ -4,12 +4,12 @@ local M = {}
 --@param buf winbuf
 --@param line string
 function M.highlighttop(buf, line)
-	local header = {}
+    local header = {}
     local cout = 1
-	local length = 0
+    local length = 0
     for i = 1, #line do
         if line:sub(i, i) ~= "|" then
-			length = length + 1
+            length = length + 1
             if cout % 2 == 0 then
                 --print(line:sub(i, i))
                 api.nvim_buf_add_highlight(buf, -1, "WhidHeader", 0, i - 1, i)
@@ -17,12 +17,12 @@ function M.highlighttop(buf, line)
                 api.nvim_buf_add_highlight(buf, -1, "WhidSubHeader", 0, i - 1, i)
             end
         else
-			table.insert(header,length)
-			length = 0
+            table.insert(header, length)
+            length = 0
             cout = cout + 1
         end
     end
-	return header
+    return header
 end
 
 --@param buf winbuf
