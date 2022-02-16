@@ -4,8 +4,8 @@ local M = {
 	winid = nil,
 	buf = nil,
 	mainwindowbuf = nil,
-	before = 10,
-	after = 10,
+	before = 5,
+	after = 5,
 }
 local highlight = require("csvtools.topbarhighlight")
 function M.NewWindow()
@@ -53,7 +53,6 @@ local function getrange (line,length)
 end
 function M.Highlight()
 	if vim.o.filetype == "csv" then
-
 		M.mainwindowbuf = vim.api.nvim_get_current_buf()
 		local line ,_ = unpack(vim.api.nvim_win_get_cursor(0))
 		local length = vim.api.nvim_buf_line_count(M.mainwindowbuf)
@@ -69,6 +68,7 @@ function M.Highlight()
 	end
 end
 function M.add_mappings()
+	M.mainwindowbuf = vim.api.nvim_get_current_buf()
 	--print(M.mainwindowbuf)
 	local opts = { nowait = true, noremap = true, silent = true }
 	--vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow<cr>", opts)
