@@ -1,14 +1,26 @@
 local api = vim.api
 local highlight = require("csvtools.highlight")
+local overflow = require("csvtools.overflowtext")
 local M = {
     winid = nil,
     buf = nil,
     mainwindowbuf = nil,
+	header = {},
     before = 20,
     after = 20,
     clearafter = true,
+	overflowtext = {
+		markid = nil,
+		ns_id = nil,
+		id = nil,
+	}
 }
-
+function M.printheader()
+	--for count = 1, #M.header do
+	--	print(M.header[count])
+	--end
+	return M.header
+end
 function M.NewWindow()
     if M.winid == nil then
         M.mainwindowbuf = vim.api.nvim_get_current_buf()
@@ -26,9 +38,7 @@ function M.NewWindow()
         local win = vim.api.nvim_get_current_win()
         api.nvim_buf_set_lines(buf, 0, -1, false, { messages })
         api.nvim_win_set_buf(win, buf)
-        highlight.highlighttop(buf, messages)
-        --api.nvim_buf_add_highlight(buf, -1, 'WhidHeader',0,0,1)
-        --api.nvim_buf_add_highlight(buf, -1, 'WhidSubHeader', 0, 1, 2)
+        M.header = highlight.highlighttop(buf, messages)
         M.winid = win
         M.buf = buf
         M.add_mappings()
@@ -39,7 +49,8 @@ function M.CloseWindow()
     if M.winid ~= nil then
         vim.api.nvim_win_close(M.winid, true)
         M.winid = nil
-        M.buf = nil
+  M.buf = nil
+		M.header = {}
     end
 end
 
@@ -61,6 +72,7 @@ function M.Highlight()
     if vim.o.filetype == "csv" then
         M.mainwindowbuf = vim.api.nvim_get_current_buf()
         local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
+		--print(line)
         local length = vim.api.nvim_buf_line_count(M.mainwindowbuf)
         if M.clearafter then
             api.nvim_buf_clear_highlight(M.mainwindowbuf, -1, 0, length)
@@ -68,6 +80,7 @@ function M.Highlight()
         local start, final = getrange(line, length)
         --print(start)
         --print(final)
+		M.overflowtext= overflow.OverFlow(line,M.header)
         for i = start, line, 1 do
             highlight.highlight(M.mainwindowbuf, i)
         end
@@ -75,6 +88,13 @@ function M.Highlight()
             highlight.highlight(M.mainwindowbuf, i)
         end
     end
+end
+function M.deleteMark()
+	vim.api.nvim_buf_del_extmark(
+		M.overflowtext.markid,
+		M.overflowtext.ns_id,
+		M.overflowtext.id
+	)
 end
 function M.add_mappings()
     M.mainwindowbuf = vim.api.nvim_get_current_buf()
@@ -84,8 +104,8 @@ function M.add_mappings()
     vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>tf", ":lua require'csvtools'.NewWindow()<cr>", opts)
     vim.api.nvim_buf_set_keymap(M.buf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
     vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<up>", ":lua require'csvtools'.Highlight()<cr>:-1<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<down>", ":lua require'csvtools'.Highlight()<cr>:+1<cr>", opts)
+    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<up>", ":-1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<down>", ":+1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
 end
 function M.setup(opts)
     M = vim.tbl_deep_extend("force", M, opts)
