@@ -9,6 +9,7 @@ local M = {
     before = 20,
     after = 20,
     clearafter = true,
+	showoverflow = true,
     overflowtext = {
         markid = nil,
         ns_id = nil,
@@ -81,7 +82,9 @@ function M.Highlight()
         local start, final = getrange(line, length)
         --print(start)
         --print(final)
-        M.overflowtext = overflow.OverFlow(line, M.header)
+		if M.showoverflow then
+			M.overflowtext = overflow.OverFlow(line, M.header)
+		end
         for i = start, line, 1 do
             highlight.highlight(M.mainwindowbuf, i)
         end
@@ -91,7 +94,9 @@ function M.Highlight()
     end
 end
 function M.deleteMark()
-    vim.api.nvim_buf_del_extmark(M.overflowtext.markid, M.overflowtext.ns_id, M.overflowtext.id)
+	if M.showoverflow then
+		vim.api.nvim_buf_del_extmark(M.overflowtext.markid, M.overflowtext.ns_id, M.overflowtext.id)
+	end
 end
 function M.add_mappings()
     M.mainwindowbuf = vim.api.nvim_get_current_buf()
