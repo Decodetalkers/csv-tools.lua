@@ -27,6 +27,11 @@ Above is the default setting
 | -- | -- |
 |\<leader\> td| close the topwindow ,both topwindow and csv buffer has |
 |\<leader\> tf| open a new topwindow |
+|\<leader\> tg| if remain the hightlight |
+
+## Example
+
+You can try the csv in example
 
 ## TODO
 
