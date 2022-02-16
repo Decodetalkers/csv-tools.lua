@@ -13,7 +13,7 @@ function M.NewWindow()
 		M.mainwindowbuf = vim.api.nvim_get_current_buf()
 		--local file = vim.api.nvim_buf_get_name(0)
 		--local f = io.open(file, "r")
-		local messages = unpack(api.nvim_buf_get_lines(M.mainwindowbuf,0,1,true))
+		local messages = unpack(api.nvim_buf_get_lines(M.mainwindowbuf, 0, 1, true))
 		if messages == nil then
 			return
 		end
@@ -40,7 +40,7 @@ function M.CloseWindow()
 		M.buf = nil
 	end
 end
-local function getrange (line,length)
+local function getrange(line, length)
 	local start = 1
 	if line - M.before > 1 then
 		start = line - M.before
@@ -54,16 +54,16 @@ end
 function M.Highlight()
 	if vim.o.filetype == "csv" then
 		M.mainwindowbuf = vim.api.nvim_get_current_buf()
-		local line ,_ = unpack(vim.api.nvim_win_get_cursor(0))
+		local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
 		local length = vim.api.nvim_buf_line_count(M.mainwindowbuf)
-		local start, final  = getrange(line,length)
+		local start, final = getrange(line, length)
 		--print(start)
 		--print(final)
 		for i = start, line, 1 do
-			highlight.highlight(M.mainwindowbuf,i)
+			highlight.highlight(M.mainwindowbuf, i)
 		end
 		for i = line, final, 1 do
-			highlight.highlight(M.mainwindowbuf,i)
+			highlight.highlight(M.mainwindowbuf, i)
 		end
 	end
 end
