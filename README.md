@@ -41,3 +41,6 @@ You can try the csv in example
 ## TODO
 
 * Make the top line and csv shown as a table
+
+## Show
+[![asciicast](https://asciinema.org/a/6m96O56cer4DZfStoVoddHoqy.svg)](https://asciinema.org/a/6m96O56cer4DZfStoVoddHoqy)
