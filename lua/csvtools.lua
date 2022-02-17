@@ -1,6 +1,7 @@
 local api = vim.api
 local highlight = require("csvtools.highlight")
 local overflow = require("csvtools.overflowtext")
+local getheader = require("csvtools.header")
 local M = {
     before = 20,
     after = 20,
@@ -16,9 +17,9 @@ local Status = {
     header = {},
     overflowtext = {},
 }
-function M.printheader()
-    return Status.header
-end
+--function M.printheader()
+--    return Status.header
+--end
 function M.Ifclear()
     if M.clearafter then
         M.clearafter = false
@@ -43,7 +44,7 @@ function M.NewWindow()
         local win = vim.api.nvim_get_current_win()
         api.nvim_buf_set_lines(buf, 0, -1, false, { messages })
         api.nvim_win_set_buf(win, buf)
-        Status.header = highlight.highlighttop(buf, messages)
+        highlight.highlighttop(buf, messages)
         Status.winid = win
         Status.buf = buf
         M.add_mappings()
@@ -87,6 +88,7 @@ local function getrangeoverflow(line, length)
 end
 function M.Highlight()
     if vim.o.filetype == "csv" then
+        Status.header = getheader.Header()
         if M.showoverflow then
             for count = 1, #Status.overflowtext do
                 vim.api.nvim_buf_del_extmark(
