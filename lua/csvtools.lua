@@ -53,7 +53,7 @@ end
 
 function M.CloseWindow()
     if Status.winid ~= nil then
-        vim.api.nvim_win_close(M.winid, true)
+        vim.api.nvim_win_close(Status.winid, true)
         Status.winid = nil
         Status.buf = nil
         Status.header = {}
@@ -89,15 +89,15 @@ end
 function M.Highlight()
     if vim.o.filetype == "csv" then
         Status.header = getheader.Header()
-        if M.showoverflow then
-            for count = 1, #Status.overflowtext do
-                vim.api.nvim_buf_del_extmark(
-                    Status.overflowtext[count].markid,
-                    Status.overflowtext[count].ns_id,
-                    Status.overflowtext[count].id
-                )
-            end
-        end
+        --if M.showoverflow then
+        --    for count = 1, #Status.overflowtext do
+        --        vim.api.nvim_buf_del_extmark(
+        --            Status.overflowtext[count].markid,
+        --            Status.overflowtext[count].ns_id,
+        --            Status.overflowtext[count].id
+        --        )
+        --    end
+        --end
         Status.overflowtext = {}
         M.mainwindowbuf = vim.api.nvim_get_current_buf()
         local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
