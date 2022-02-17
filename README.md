@@ -33,6 +33,7 @@ Above is the default setting
 |\<leader\> td| close the topwindow ,both topwindow and csv buffer has |
 |\<leader\> tf| open a new topwindow |
 |\<leader\> tg| if remain the hightlight |
+|\<leader\> tr| Remove overflow temporarily |
 
 ## Example
 
