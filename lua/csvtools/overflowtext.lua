@@ -6,8 +6,8 @@ local function Split(s, delimiter)
     end
     return result
 end
-local ns_id = vim.api.nvim_create_namespace("demo")
-function M.OverFlow(line_num, header)
+local ns_id = vim.api.nvim_create_namespace("csvoverview")
+function M.OverFlow(line_num, header, id)
     local bnr = vim.fn.bufnr("%")
     local line = unpack(vim.api.nvim_buf_get_lines(0, line_num - 1, line_num, true))
     local output = Split(line, ",")
@@ -40,8 +40,8 @@ function M.OverFlow(line_num, header)
         --print(output[count])
     end
     local opts = {
-        end_line = 10,
-        id = 1,
+        end_line = 1,
+        id = id,
         virt_text = virt_text,
         virt_text_pos = "overlay",
         -- virt_text_win_col = 20,
@@ -51,7 +51,7 @@ function M.OverFlow(line_num, header)
     return {
         markid = vim.api.nvim_buf_set_extmark(bnr, ns_id, line_num - 1, 0, opts),
         ns_id = ns_id,
-        id = 1,
+        id = id,
     }
 end
 return M

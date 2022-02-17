@@ -2,20 +2,31 @@ local api = vim.api
 local highlight = require("csvtools.highlight")
 local overflow = require("csvtools.overflowtext")
 local M = {
-    winid = nil,
-    buf = nil,
-    mainwindowbuf = nil,
-    header = {},
+    --winid = nil,
+    --buf = nil,
+    --mainwindowbuf = nil,
+    --header = {},
     before = 20,
     after = 20,
     clearafter = true,
     showoverflow = true,
-    overflowtext = {
-        markid = nil,
-        ns_id = nil,
-        id = nil,
-    },
+    --overflowtext = {
+    --    markid = nil,
+    --    ns_id = nil,
+    --    id = nil,
+    --},
 }
+-- buf's status
+local Status = {
+    winid = nil,
+    buf = nil,
+    mainwindowbuf = nil,
+    header = {},
+    overflowtext = {},
+}
+function M.printheader()
+    return Status.header
+end
 function M.Ifclear()
     if M.clearafter then
         M.clearafter = false
@@ -24,8 +35,8 @@ function M.Ifclear()
     end
 end
 function M.NewWindow()
-    if M.winid == nil then
-        M.mainwindowbuf = vim.api.nvim_get_current_buf()
+    if Status.winid == nil then
+        Status.mainwindowbuf = vim.api.nvim_get_current_buf()
         --local file = vim.api.nvim_buf_get_name(0)
         --local f = io.open(file, "r")
         local messages = unpack(api.nvim_buf_get_lines(M.mainwindowbuf, 0, 1, true))
@@ -40,19 +51,19 @@ function M.NewWindow()
         local win = vim.api.nvim_get_current_win()
         api.nvim_buf_set_lines(buf, 0, -1, false, { messages })
         api.nvim_win_set_buf(win, buf)
-        M.header = highlight.highlighttop(buf, messages)
-        M.winid = win
-        M.buf = buf
+        Status.header = highlight.highlighttop(buf, messages)
+        Status.winid = win
+        Status.buf = buf
         M.add_mappings()
     end
 end
 
 function M.CloseWindow()
-    if M.winid ~= nil then
+    if Status.winid ~= nil then
         vim.api.nvim_win_close(M.winid, true)
-        M.winid = nil
-        M.buf = nil
-        M.header = {}
+        Status.winid = nil
+        Status.buf = nil
+        Status.header = {}
     end
 end
 
@@ -70,8 +81,30 @@ local function getrange(line, length)
     end
     return start, final
 end
+-- only 3 overflow
+local function getrangeoverflow(line, length)
+    local start = 1
+    if line - 1 > 1 then
+        start = line - 1
+    end
+    local final = length
+    if line + 1 < length then
+        final = line + 1
+    end
+    return start, final
+end
 function M.Highlight()
     if vim.o.filetype == "csv" then
+        if M.showoverflow then
+            for count = 1, #Status.overflowtext do
+                vim.api.nvim_buf_del_extmark(
+                    Status.overflowtext[count].markid,
+                    Status.overflowtext[count].ns_id,
+                    Status.overflowtext[count].id
+                )
+            end
+        end
+        Status.overflowtext = {}
         M.mainwindowbuf = vim.api.nvim_get_current_buf()
         local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
         --print(line)
@@ -80,22 +113,39 @@ function M.Highlight()
             api.nvim_buf_clear_highlight(M.mainwindowbuf, -1, 0, length)
         end
         local start, final = getrange(line, length)
+        local start2, final2 = getrangeoverflow(line, length)
         --print(start)
         --print(final)
+        highlight.highlight(M.mainwindowbuf, line)
+        for i = start, line - 1, 1 do
+            highlight.highlight(M.mainwindowbuf, i)
+        end
+        for i = line + 1, final, 1 do
+            highlight.highlight(M.mainwindowbuf, i)
+        end
         if M.showoverflow then
-            M.overflowtext = overflow.OverFlow(line, M.header)
-        end
-        for i = start, line, 1 do
-            highlight.highlight(M.mainwindowbuf, i)
-        end
-        for i = line, final, 1 do
-            highlight.highlight(M.mainwindowbuf, i)
+            table.insert(Status.overflowtext, overflow.OverFlow(line, Status.header, 1))
+            local count = 2
+            for i = start2, line - 1, 1 do
+                table.insert(Status.overflowtext, overflow.OverFlow(i, Status.header, count))
+                --highlight.highlight(M.mainwindowbuf, count)
+                count = count + 1
+            end
+            for i = line + 1, final2, 1 do
+                table.insert(Status.overflowtext, overflow.OverFlow(i, Status.header, count))
+                --highlight.highlight(M.mainwindowbuf, count)
+                count = count + 1
+            end
         end
     end
 end
 function M.deleteMark()
     if M.showoverflow then
-        vim.api.nvim_buf_del_extmark(M.overflowtext.markid, M.overflowtext.ns_id, M.overflowtext.id)
+        vim.api.nvim_buf_del_extmark(
+            Status.overflowtext[1].markid,
+            Status.overflowtext[1].ns_id,
+            Status.overflowtext[1].id
+        )
     end
 end
 function M.add_mappings()
