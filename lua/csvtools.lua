@@ -2,19 +2,11 @@ local api = vim.api
 local highlight = require("csvtools.highlight")
 local overflow = require("csvtools.overflowtext")
 local M = {
-    --winid = nil,
-    --buf = nil,
-    --mainwindowbuf = nil,
-    --header = {},
     before = 20,
     after = 20,
     clearafter = true,
     showoverflow = true,
-    --overflowtext = {
-    --    markid = nil,
-    --    ns_id = nil,
-    --    id = nil,
-    --},
+    titleflow = true,
 }
 -- buf's status
 local Status = {
@@ -135,6 +127,9 @@ function M.Highlight()
                 table.insert(Status.overflowtext, overflow.OverFlow(i, Status.header, count))
                 --highlight.highlight(M.mainwindowbuf, count)
                 count = count + 1
+            end
+            if line - 2 > 0 and M.titleflow then
+                table.insert(Status.overflowtext, overflow.OverFlowTitle(line - 2, Status.header, 4))
             end
         end
     end

@@ -11,6 +11,8 @@ require("csvtools").setup({
 	-- this will clear the highlight of buf after move
 	showoverflow = true,
 	-- this will provide a overflow show
+	titelflow = true,
+	-- add an alone title
 
 })
 ```
