@@ -5,7 +5,6 @@ local M = {}
 function M.Header()
     local line = unpack(vim.api.nvim_buf_get_lines(0, 0, 1, true))
     local header = {}
-    local cout = 1
     local length = 0
     for i = 1, #line do
         if line:sub(i, i) ~= "," then
@@ -13,8 +12,11 @@ function M.Header()
         else
             table.insert(header, length)
             length = 0
-            cout = cout + 1
         end
+    end
+    -- fixbug
+    if length ~= 0 then
+        table.insert(header, length)
     end
     return header
 end
