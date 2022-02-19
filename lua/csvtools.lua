@@ -1,4 +1,4 @@
-local api = vim.api
+--local api = vim.api
 local highlight = require("csvtools.highlight")
 local overflow = require("csvtools.overflowtext")
 local getheader = require("csvtools.header")
@@ -32,18 +32,18 @@ function M.NewWindow()
         Status.mainwindowbuf = vim.api.nvim_get_current_buf()
         --local file = vim.api.nvim_buf_get_name(0)
         --local f = io.open(file, "r")
-        local messages = unpack(api.nvim_buf_get_lines(M.mainwindowbuf, 0, 1, true))
+        local messages = unpack(vim.api.nvim_buf_get_lines(M.mainwindowbuf, 0, 1, true))
         if messages == nil then
             return
         end
         --f:close()
         messages = messages:gsub("%,", "|")
-        local buf = api.nvim_create_buf(false, true) -- create new emtpy buffer
+        local buf = vim.api.nvim_create_buf(false, true) -- create new emtpy buffer
         vim.cmd([[sview]])
-        api.nvim_win_set_height(0, 1)
+        vim.api.nvim_win_set_height(0, 1)
         local win = vim.api.nvim_get_current_win()
-        api.nvim_buf_set_lines(buf, 0, -1, false, { messages })
-        api.nvim_win_set_buf(win, buf)
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, { messages })
+        vim.api.nvim_win_set_buf(win, buf)
         highlight.highlighttop(buf, messages)
         Status.winid = win
         Status.buf = buf
@@ -116,7 +116,7 @@ function M.Highlight()
         --print(line)
         local length = vim.api.nvim_buf_line_count(M.mainwindowbuf)
         if M.clearafter then
-            api.nvim_buf_clear_highlight(M.mainwindowbuf, -1, 0, length)
+            vim.api.nvim_buf_clear_highlight(M.mainwindowbuf, -1, 0, length)
         end
         local start, final = getrange(line, length)
         local start2, final2 = getrangeoverflow(line, length)

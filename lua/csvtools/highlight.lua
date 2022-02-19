@@ -1,4 +1,4 @@
-local api = vim.api
+--local api = vim.api
 local M = {}
 
 --@param buf winbuf
@@ -12,9 +12,9 @@ function M.highlighttop(buf, line)
             --length = length + 1
             if cout % 2 == 0 then
                 --print(line:sub(i, i))
-                api.nvim_buf_add_highlight(buf, -1, "WhidHeader", 0, i - 1, i)
+                vim.api.nvim_buf_add_highlight(buf, -1, "WhidHeader", 0, i - 1, i)
             else
-                api.nvim_buf_add_highlight(buf, -1, "WhidSubHeader", 0, i - 1, i)
+                vim.api.nvim_buf_add_highlight(buf, -1, "WhidSubHeader", 0, i - 1, i)
             end
         else
             --table.insert(header, length)
@@ -35,9 +35,9 @@ function M.highlight(buf, number)
         if line:sub(i, i) ~= "," then
             if cout % 2 == 0 then
                 --print(line:sub(i, i))
-                api.nvim_buf_add_highlight(buf, -1, "WhidHeader", number - 1, i - 1, i)
+                vim.api.nvim_buf_add_highlight(buf, -1, "WhidHeader", number - 1, i - 1, i)
             else
-                api.nvim_buf_add_highlight(buf, -1, "WhidSubHeader", number - 1, i - 1, i)
+                vim.api.nvim_buf_add_highlight(buf, -1, "WhidSubHeader", number - 1, i - 1, i)
             end
         else
             cout = cout + 1
