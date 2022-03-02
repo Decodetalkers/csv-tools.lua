@@ -163,7 +163,7 @@ function M.add_mappings()
     local opts = { nowait = true, noremap = true, silent = true }
     --vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow<cr>", opts)
     vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>tf", ":lua require'csvtools'.NewWindow()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.buf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
     vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
     vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>tr", ":lua require'csvtools'.CloseOverFlow()<cr>", opts)
     vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>tg", ":lua require'csvtools'.Ifclear()<cr>", opts)
