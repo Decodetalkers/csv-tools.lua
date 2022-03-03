@@ -27,6 +27,7 @@ function M.Ifclear()
         M.clearafter = true
     end
 end
+
 function M.NewWindow()
     if Status.winid == nil then
         Status.mainwindowbuf = vim.api.nvim_get_current_buf()
@@ -86,6 +87,7 @@ local function getrangeoverflow(line, length)
     end
     return start, final
 end
+
 function M.CloseOverFlow()
     if M.showoverflow then
         for count = 1, #Status.overflowtext do
@@ -111,7 +113,7 @@ function M.Highlight()
         --    end
         --end
         Status.overflowtext = {}
-        M.mainwindowbuf = vim.api.nvim_get_current_buf()
+        Status.mainwindowbuf = vim.api.nvim_get_current_buf()
         local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
         --print(line)
         local length = vim.api.nvim_buf_line_count(Status.mainwindowbuf)
@@ -148,6 +150,7 @@ function M.Highlight()
         end
     end
 end
+-- delete the mark before
 function M.deleteMark()
     if M.showoverflow then
         vim.api.nvim_buf_del_extmark(
@@ -157,19 +160,48 @@ function M.deleteMark()
         )
     end
 end
+
 function M.add_mappings()
     Status.mainwindowbuf = vim.api.nvim_get_current_buf()
     --print(M.mainwindowbuf)
     local opts = { nowait = true, noremap = true, silent = true }
     --vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow<cr>", opts)
     vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>tf", ":lua require'csvtools'.NewWindow()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(Status.buf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>tr", ":lua require'csvtools'.CloseOverFlow()<cr>", opts)
+    if Status.buf ~= nil then
+        vim.api.nvim_buf_set_keymap(Status.buf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
+
+    end
+        vim.api.nvim_buf_set_keymap(
+            Status.mainwindowbuf,
+            "n",
+            "<leader>td",
+            ":lua require'csvtools'.CloseWindow()<cr>",
+            opts
+        )
+
+    vim.api.nvim_buf_set_keymap(
+        Status.mainwindowbuf,
+        "n",
+        "<leader>tr",
+        ":lua require'csvtools'.CloseOverFlow()<cr>",
+        opts
+    )
     vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>tg", ":lua require'csvtools'.Ifclear()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<up>", ":-1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(
+        Status.mainwindowbuf,
+        "n",
+        "<up>",
+        ":-1<cr>:lua require'csvtools'.Highlight()<cr>",
+        opts
+    )
     vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "k", ":-1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<down>", ":+1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(
+        Status.mainwindowbuf,
+        "n",
+        "<down>",
+        ":+1<cr>:lua require'csvtools'.Highlight()<cr>",
+        opts
+    )
     vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "j", ":+1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
 end
 function M.setup(opts)
