@@ -158,7 +158,7 @@ function M.deleteMark()
     end
 end
 function M.add_mappings()
-    M.mainwindowbuf = vim.api.nvim_get_current_buf()
+    Status.mainwindowbuf = vim.api.nvim_get_current_buf()
     --print(M.mainwindowbuf)
     local opts = { nowait = true, noremap = true, silent = true }
     --vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow<cr>", opts)
