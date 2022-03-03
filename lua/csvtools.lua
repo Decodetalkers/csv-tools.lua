@@ -169,15 +169,14 @@ function M.add_mappings()
     vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>tf", ":lua require'csvtools'.NewWindow()<cr>", opts)
     if Status.buf ~= nil then
         vim.api.nvim_buf_set_keymap(Status.buf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
-
     end
-        vim.api.nvim_buf_set_keymap(
-            Status.mainwindowbuf,
-            "n",
-            "<leader>td",
-            ":lua require'csvtools'.CloseWindow()<cr>",
-            opts
-        )
+    vim.api.nvim_buf_set_keymap(
+        Status.mainwindowbuf,
+        "n",
+        "<leader>td",
+        ":lua require'csvtools'.CloseWindow()<cr>",
+        opts
+    )
 
     vim.api.nvim_buf_set_keymap(
         Status.mainwindowbuf,
