@@ -29,7 +29,7 @@ function M.Ifclear()
 end
 
 function M.NewWindow()
-	-- before create new top window ,close the window now
+    -- before create new top window ,close the window now
     M.CloseWindow()
     Status.mainwindowbuf = vim.api.nvim_get_current_buf()
     --local file = vim.api.nvim_buf_get_name(0)
