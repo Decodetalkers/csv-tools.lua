@@ -54,7 +54,8 @@ end
 
 function M.CloseWindow()
     if Status.winid ~= nil then
-        vim.api.nvim_win_close(Status.winid, true)
+        -- top window may close by people, so use pcall
+        pcall(vim.api.nvim_win_close, Status.winid, true)
         Status.winid = nil
         Status.buf = nil
         Status.header = {}
