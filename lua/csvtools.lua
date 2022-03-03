@@ -29,27 +29,27 @@ function M.Ifclear()
 end
 
 function M.NewWindow()
-    if Status.winid == nil then
-        Status.mainwindowbuf = vim.api.nvim_get_current_buf()
-        --local file = vim.api.nvim_buf_get_name(0)
-        --local f = io.open(file, "r")
-        local messages = unpack(vim.api.nvim_buf_get_lines(Status.mainwindowbuf, 0, 1, true))
-        if messages == nil then
-            return
-        end
-        --f:close()
-        messages = messages:gsub("%,", "|")
-        local buf = vim.api.nvim_create_buf(false, true) -- create new emtpy buffer
-        vim.cmd([[sview]])
-        vim.api.nvim_win_set_height(0, 1)
-        local win = vim.api.nvim_get_current_win()
-        vim.api.nvim_buf_set_lines(buf, 0, -1, false, { messages })
-        vim.api.nvim_win_set_buf(win, buf)
-        highlight.highlighttop(buf, messages)
-        Status.winid = win
-        Status.buf = buf
-        M.add_mappings()
+	-- before create new top window ,close the window now
+    M.CloseWindow()
+    Status.mainwindowbuf = vim.api.nvim_get_current_buf()
+    --local file = vim.api.nvim_buf_get_name(0)
+    --local f = io.open(file, "r")
+    local messages = unpack(vim.api.nvim_buf_get_lines(Status.mainwindowbuf, 0, 1, true))
+    if messages == nil then
+        return
     end
+    --f:close()
+    messages = messages:gsub("%,", "|")
+    local buf = vim.api.nvim_create_buf(false, true) -- create new emtpy buffer
+    vim.cmd([[sview]])
+    vim.api.nvim_win_set_height(0, 1)
+    local win = vim.api.nvim_get_current_win()
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { messages })
+    vim.api.nvim_win_set_buf(win, buf)
+    highlight.highlighttop(buf, messages)
+    Status.winid = win
+    Status.buf = buf
+    M.add_mappings()
 end
 
 function M.CloseWindow()
