@@ -32,7 +32,7 @@ function M.NewWindow()
         Status.mainwindowbuf = vim.api.nvim_get_current_buf()
         --local file = vim.api.nvim_buf_get_name(0)
         --local f = io.open(file, "r")
-        local messages = unpack(vim.api.nvim_buf_get_lines(M.mainwindowbuf, 0, 1, true))
+        local messages = unpack(vim.api.nvim_buf_get_lines(Status.mainwindowbuf, 0, 1, true))
         if messages == nil then
             return
         end
@@ -114,20 +114,20 @@ function M.Highlight()
         M.mainwindowbuf = vim.api.nvim_get_current_buf()
         local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
         --print(line)
-        local length = vim.api.nvim_buf_line_count(M.mainwindowbuf)
+        local length = vim.api.nvim_buf_line_count(Status.mainwindowbuf)
         if M.clearafter then
-            vim.api.nvim_buf_clear_highlight(M.mainwindowbuf, -1, 0, length)
+            vim.api.nvim_buf_clear_highlight(Status.mainwindowbuf, -1, 0, length)
         end
         local start, final = getrange(line, length)
         local start2, final2 = getrangeoverflow(line, length)
         --print(start)
         --print(final)
-        highlight.highlight(M.mainwindowbuf, line)
+        highlight.highlight(Status.mainwindowbuf, line)
         for i = start, line - 1, 1 do
-            highlight.highlight(M.mainwindowbuf, i)
+            highlight.highlight(Status.mainwindowbuf, i)
         end
         for i = line + 1, final, 1 do
-            highlight.highlight(M.mainwindowbuf, i)
+            highlight.highlight(Status.mainwindowbuf, i)
         end
         if M.showoverflow then
             table.insert(Status.overflowtext, overflow.OverFlow(line, Status.header, 1))
@@ -162,15 +162,15 @@ function M.add_mappings()
     --print(M.mainwindowbuf)
     local opts = { nowait = true, noremap = true, silent = true }
     --vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>tf", ":lua require'csvtools'.NewWindow()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.buf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>tr", ":lua require'csvtools'.CloseOverFlow()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>tg", ":lua require'csvtools'.Ifclear()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<up>", ":-1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "k", ":-1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<down>", ":+1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
-    vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "j", ":+1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>tf", ":lua require'csvtools'.NewWindow()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.buf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>tr", ":lua require'csvtools'.CloseOverFlow()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>tg", ":lua require'csvtools'.Ifclear()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<up>", ":-1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "k", ":-1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<down>", ":+1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "j", ":+1<cr>:lua require'csvtools'.Highlight()<cr>", opts)
 end
 function M.setup(opts)
     M = vim.tbl_deep_extend("force", M, opts)
