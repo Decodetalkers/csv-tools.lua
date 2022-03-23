@@ -153,7 +153,7 @@ function M.Highlight()
 end
 -- delete the mark before
 function M.deleteMark()
-    if M.showoverflow then
+    if M.showoverflow and Status.overflowtext[1] ~=nil then
         vim.api.nvim_buf_del_extmark(
             Status.overflowtext[1].bnr,
             Status.overflowtext[1].ns_id,
