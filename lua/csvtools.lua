@@ -186,7 +186,7 @@ function M.add_mappings()
         "<cmd>-1<cr><cmd>lua require'csvtools'.Highlight()<cr>",
         opts
     )
-    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "k", "<cmd>+1<CR><cmd>lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "k", "<cmd>-1<CR><cmd>lua require'csvtools'.Highlight()<cr>", opts)
     vim.api.nvim_buf_set_keymap(
         Status.mainwindowbuf,
         "n",
