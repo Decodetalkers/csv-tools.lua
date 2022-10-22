@@ -145,7 +145,7 @@ function M.Highlight()
 end
 -- delete the mark before
 function M.deleteMark()
-    if M.showoverflow and Status.overflowtext[1] ~=nil then
+    if M.showoverflow and Status.overflowtext[1] ~= nil then
         vim.api.nvim_buf_del_extmark(
             Status.overflowtext[1].bnr,
             Status.overflowtext[1].ns_id,
@@ -159,7 +159,13 @@ function M.add_mappings()
     --print(M.mainwindowbuf)
     local opts = { nowait = true, noremap = true, silent = true }
     --vim.api.nvim_buf_set_keymap(M.mainwindowbuf, "n", "<leader>td", ":lua require'csvtools'.CloseWindow<cr>", opts)
-    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>tf", "<cmd>lua require'csvtools'.NewWindow()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(
+        Status.mainwindowbuf,
+        "n",
+        "<leader>tf",
+        "<cmd>lua require'csvtools'.NewWindow()<cr>",
+        opts
+    )
     if Status.buf ~= nil then
         vim.api.nvim_buf_set_keymap(Status.buf, "n", "<leader>td", "<cmd>lua require'csvtools'.CloseWindow()<cr>", opts)
     end
@@ -178,7 +184,13 @@ function M.add_mappings()
         "<cmd>lua require'csvtools'.CloseOverFlow()<cr>",
         opts
     )
-    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "<leader>tg", "<cmd>lua require'csvtools'.Ifclear()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(
+        Status.mainwindowbuf,
+        "n",
+        "<leader>tg",
+        "<cmd>lua require'csvtools'.Ifclear()<cr>",
+        opts
+    )
     vim.api.nvim_buf_set_keymap(
         Status.mainwindowbuf,
         "n",
@@ -186,7 +198,13 @@ function M.add_mappings()
         "<cmd>-1<cr><cmd>lua require'csvtools'.Highlight()<cr>",
         opts
     )
-    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "k", "<cmd>-1<CR><cmd>lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(
+        Status.mainwindowbuf,
+        "n",
+        "k",
+        "<cmd>-1<CR><cmd>lua require'csvtools'.Highlight()<cr>",
+        opts
+    )
     vim.api.nvim_buf_set_keymap(
         Status.mainwindowbuf,
         "n",
@@ -194,7 +212,13 @@ function M.add_mappings()
         "<cmd>+1<cr><cmd>lua require'csvtools'.Highlight()<cr>",
         opts
     )
-    vim.api.nvim_buf_set_keymap(Status.mainwindowbuf, "n", "j", "<cmd>+1<cr><cmd>lua require'csvtools'.Highlight()<cr>", opts)
+    vim.api.nvim_buf_set_keymap(
+        Status.mainwindowbuf,
+        "n",
+        "j",
+        "<cmd>+1<cr><cmd>lua require'csvtools'.Highlight()<cr>",
+        opts
+    )
 end
 function M.setup(opts)
     M = vim.tbl_deep_extend("force", M, opts)
