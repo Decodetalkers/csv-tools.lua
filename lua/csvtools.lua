@@ -111,7 +111,7 @@ function M.Highlight()
         --print(line)
         local length = vim.api.nvim_buf_line_count(Status.mainwindowbuf)
         if M.clearafter then
-            vim.api.nvim_buf_clear_highlight(Status.mainwindowbuf, -1, 0, length)
+            vim.api.nvim_buf_clear_namespace(Status.mainwindowbuf, -1, 0, length)
         end
         local start, final = getrange(line, length)
         local start2, final2 = getrangeoverflow(line, length)
