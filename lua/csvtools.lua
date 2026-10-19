@@ -30,13 +30,10 @@ function M.NewWindow()
     -- before create new top window ,close the window now
     M.CloseWindow()
     Status.mainwindowbuf = vim.api.nvim_get_current_buf()
-    --local file = vim.api.nvim_buf_get_name(0)
-    --local f = io.open(file, "r")
     local messages = unpack(vim.api.nvim_buf_get_lines(Status.mainwindowbuf, 0, 1, true))
     if messages == nil then
         return
     end
-    --f:close()
     messages = messages:gsub("%,", "|")
     local buf = vim.api.nvim_create_buf(false, true) -- create new empty buffer
     vim.cmd([[sview]])
@@ -60,9 +57,10 @@ function M.CloseWindow()
     end
 end
 
---@param line number
---@param length string
---@return number number
+---@param line integer
+---@param length integer
+---@return integer
+---@return integer
 local function getrange(line, length)
     local start = 1
     if line - M.before > 1 then
@@ -101,41 +99,39 @@ function M.CloseOverFlow()
 end
 
 function M.Highlight()
-    if vim.o.filetype == "csv" then
-        Status.header = getheader.Header()
-        Status.overflowtext = {}
-        -- get the buffer id
-        Status.mainwindowbuf = vim.api.nvim_get_current_buf()
-        local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
-        local length = vim.api.nvim_buf_line_count(Status.mainwindowbuf)
-        if M.clearafter then
-            vim.api.nvim_buf_clear_namespace(Status.mainwindowbuf, -1, 0, length)
+    Status.header = getheader.Header()
+    Status.overflowtext = {}
+    -- get the buffer id
+    Status.mainwindowbuf = vim.api.nvim_get_current_buf()
+    local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
+    local length = vim.api.nvim_buf_line_count(Status.mainwindowbuf)
+    if M.clearafter then
+        vim.api.nvim_buf_clear_namespace(Status.mainwindowbuf, -1, 0, length)
+    end
+    local start, final = getrange(line, length)
+    local start2, final2 = getrangeoverflow(line, length)
+    highlight.highlight(Status.mainwindowbuf, line)
+    for i = start, line - 1, 1 do
+        highlight.highlight(Status.mainwindowbuf, i)
+    end
+    for i = line + 1, final, 1 do
+        highlight.highlight(Status.mainwindowbuf, i)
+    end
+    if M.showoverflow then
+        table.insert(Status.overflowtext, overflow.OverFlow(line, Status.header, 1))
+        local count = 2
+        for i = start2, line - 1, 1 do
+            table.insert(Status.overflowtext, overflow.OverFlow(i, Status.header, count))
+            --highlight.highlight(M.mainwindowbuf, count)
+            count = count + 1
         end
-        local start, final = getrange(line, length)
-        local start2, final2 = getrangeoverflow(line, length)
-        highlight.highlight(Status.mainwindowbuf, line)
-        for i = start, line - 1, 1 do
-            highlight.highlight(Status.mainwindowbuf, i)
+        for i = line + 1, final2, 1 do
+            table.insert(Status.overflowtext, overflow.OverFlow(i, Status.header, count))
+            --highlight.highlight(M.mainwindowbuf, count)
+            count = count + 1
         end
-        for i = line + 1, final, 1 do
-            highlight.highlight(Status.mainwindowbuf, i)
-        end
-        if M.showoverflow then
-            table.insert(Status.overflowtext, overflow.OverFlow(line, Status.header, 1))
-            local count = 2
-            for i = start2, line - 1, 1 do
-                table.insert(Status.overflowtext, overflow.OverFlow(i, Status.header, count))
-                --highlight.highlight(M.mainwindowbuf, count)
-                count = count + 1
-            end
-            for i = line + 1, final2, 1 do
-                table.insert(Status.overflowtext, overflow.OverFlow(i, Status.header, count))
-                --highlight.highlight(M.mainwindowbuf, count)
-                count = count + 1
-            end
-            if line - 2 > 0 and M.titleflow then
-                table.insert(Status.overflowtext, overflow.OverFlowTitle(line - 2, Status.header, 4))
-            end
+        if line - 2 > 0 and M.titleflow then
+            table.insert(Status.overflowtext, overflow.OverFlowTitle(line - 2, Status.header, 4))
         end
     end
 end
@@ -220,16 +216,27 @@ end
 
 function M.setup(opts)
     M = vim.tbl_deep_extend("force", M, opts)
-    vim.api.nvim_create_autocmd({ 'InsertEnter' }, {
+    vim.api.nvim_create_autocmd({ 'InsertEnter', 'FileType' }, {
         pattern = { "*.csv" },
         callback = function(_)
             M.deleteMark()
         end
     })
-    vim.api.nvim_create_autocmd({ 'InsertLeave' }, {
+    vim.api.nvim_create_autocmd({ 'InsertLeave', 'FileType' }, {
         pattern = { "*.csv" },
         callback = function(_)
             M.Highlight()
+        end
+    })
+    vim.api.nvim_create_autocmd({ 'FileType' }, {
+        pattern = { "csv" },
+        callback = function(ev)
+            vim.api.nvim_buf_create_user_command(ev.buf, "CloseCsvTopWindow", function(_)
+                M.CloseWindow()
+            end, { bang = true })
+            vim.api.nvim_buf_create_user_command(ev.buf, "CsvTopWindow", function(_)
+                M.NewWindow()
+            end, { bang = true })
         end
     })
 end

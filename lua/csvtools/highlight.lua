@@ -11,16 +11,12 @@ function M.highlighttop(buf, line)
     --local length = 0
     for i = 1, #line do
         if line:sub(i, i) ~= "|" then
-            --length = length + 1
             if cout % 2 == 0 then
-                --print(line:sub(i, i))
                 vim.api.nvim_buf_set_extmark(buf, ns, 0, i - 1, { hl_group = "WhidHeader" })
             else
                 vim.api.nvim_buf_set_extmark(buf, ns, 0, i - 1, { hl_group = "WhidSubHeader" })
             end
         else
-            --table.insert(header, length)
-            --length = 0
             cout = cout + 1
         end
     end
