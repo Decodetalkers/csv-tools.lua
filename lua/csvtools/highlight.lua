@@ -1,8 +1,10 @@
 --local api = vim.api
 local M = {}
 
---@param buf winbuf
---@param line string
+local ns = vim.api.nvim_create_namespace("csvtools")
+
+---@param buf integer
+---@param line string
 function M.highlighttop(buf, line)
     --local header = {}
     local cout = 1
@@ -12,9 +14,9 @@ function M.highlighttop(buf, line)
             --length = length + 1
             if cout % 2 == 0 then
                 --print(line:sub(i, i))
-                vim.api.nvim_buf_add_highlight(buf, -1, "WhidHeader", 0, i - 1, i)
+                vim.api.nvim_buf_set_extmark(buf, ns, 0, i - 1, { hl_group = "WhidHeader" })
             else
-                vim.api.nvim_buf_add_highlight(buf, -1, "WhidSubHeader", 0, i - 1, i)
+                vim.api.nvim_buf_set_extmark(buf, ns, 0, i - 1, { hl_group = "WhidSubHeader" })
             end
         else
             --table.insert(header, length)
@@ -25,8 +27,8 @@ function M.highlighttop(buf, line)
     --return header
 end
 
---@param buf winbuf
---@param number number
+---@param buf integer
+---@param number number
 function M.highlight(buf, number)
     local line = unpack(vim.api.nvim_buf_get_lines(buf, number - 1, number, true))
     --print(line)
@@ -35,13 +37,14 @@ function M.highlight(buf, number)
         if line:sub(i, i) ~= "," then
             if cout % 2 == 0 then
                 --print(line:sub(i, i))
-                vim.api.nvim_buf_add_highlight(buf, -1, "WhidHeader", number - 1, i - 1, i)
+                vim.api.nvim_buf_set_extmark(buf, ns, number - 1, i - 1, { hl_group = "WhidHeader" })
             else
-                vim.api.nvim_buf_add_highlight(buf, -1, "WhidSubHeader", number - 1, i - 1, i)
+                vim.api.nvim_buf_set_extmark(buf, ns, number - 1, i - 1, { hl_group = "WhidSubHeader" })
             end
         else
             cout = cout + 1
         end
     end
 end
+
 return M

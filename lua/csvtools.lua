@@ -40,7 +40,7 @@ function M.NewWindow()
     end
     --f:close()
     messages = messages:gsub("%,", "|")
-    local buf = vim.api.nvim_create_buf(false, true) -- create new emtpy buffer
+    local buf = vim.api.nvim_create_buf(false, true) -- create new empty buffer
     vim.cmd([[sview]])
     vim.api.nvim_win_set_height(0, 1)
     local win = vim.api.nvim_get_current_win()
