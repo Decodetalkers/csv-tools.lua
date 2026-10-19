@@ -17,9 +17,7 @@ local Status = {
     header = {},
     overflowtext = {},
 }
---function M.printheader()
---    return Status.header
---end
+
 function M.Ifclear()
     if M.clearafter then
         M.clearafter = false
@@ -101,6 +99,7 @@ function M.CloseOverFlow()
         end
     end
 end
+
 function M.Highlight()
     if vim.o.filetype == "csv" then
         Status.header = getheader.Header()
@@ -108,15 +107,12 @@ function M.Highlight()
         -- get the buffer id
         Status.mainwindowbuf = vim.api.nvim_get_current_buf()
         local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
-        --print(line)
         local length = vim.api.nvim_buf_line_count(Status.mainwindowbuf)
         if M.clearafter then
             vim.api.nvim_buf_clear_namespace(Status.mainwindowbuf, -1, 0, length)
         end
         local start, final = getrange(line, length)
         local start2, final2 = getrangeoverflow(line, length)
-        --print(start)
-        --print(final)
         highlight.highlight(Status.mainwindowbuf, line)
         for i = start, line - 1, 1 do
             highlight.highlight(Status.mainwindowbuf, i)
@@ -143,6 +139,7 @@ function M.Highlight()
         end
     end
 end
+
 -- delete the mark before
 function M.deleteMark()
     if M.showoverflow and Status.overflowtext[1] ~= nil then
@@ -220,7 +217,21 @@ function M.add_mappings()
         opts
     )
 end
+
 function M.setup(opts)
     M = vim.tbl_deep_extend("force", M, opts)
+    vim.api.nvim_create_autocmd({ 'InsertEnter' }, {
+        pattern = { "*.csv" },
+        callback = function(_)
+            M.deleteMark()
+        end
+    })
+    vim.api.nvim_create_autocmd({ 'InsertLeave' }, {
+        pattern = { "*.csv" },
+        callback = function(_)
+            M.Highlight()
+        end
+    })
 end
+
 return M

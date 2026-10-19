@@ -44,10 +44,7 @@ function M.OverFlow(line_num, header, id)
         id = id,
         virt_text = virt_text,
         virt_text_pos = "overlay",
-        -- virt_text_win_col = 20,
     }
-    --highlighttop2(bnr, text)
-    --print("sss")
     return {
         bnr = bnr,
         markid = vim.api.nvim_buf_set_extmark(bnr, ns_id, line_num - 1, 0, opts),
